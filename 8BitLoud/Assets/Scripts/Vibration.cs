@@ -16,7 +16,10 @@ public class Vibration : MonoBehaviour {
     //List<float> noteTime = new List<float>() { c, c, c, c, c, c, sm, sm };
     //List<float> notePosition = new List<float>() { 2, 2, 3, 2, 3, 1, 2, 2 };
 
-    float timeBWNote = 0;
+    float timeBWNote = 2f;
+
+    int tic = 0;
+    bool playingIntro=true;
 
     bool playerIndexSet = false;
     PlayerIndex playerIndex;
@@ -27,7 +30,6 @@ public class Vibration : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        tempo= notes[currNote].tempo;
     }
 	
 	// Update is called once per frame
@@ -48,14 +50,78 @@ public class Vibration : MonoBehaviour {
                 }
             }
         }
+
         playMusic();
         timeBWNote -= Time.deltaTime;
     }
 
+    void intro()
+    {
+        if (timeBWNote > 1.75f)
+        {
+            GamePad.SetVibration(playerIndex, 0, 1);
+        }
+        else if(timeBWNote>1.5f && timeBWNote <= 1.75f) { 
+                GamePad.SetVibration(playerIndex, 0, 0);
+        }
+        else if(timeBWNote>1.25f && timeBWNote <= 1.5f) { 
+                GamePad.SetVibration(playerIndex, 0, 1);
+        }
+        else if(timeBWNote>1f && timeBWNote <= 1.25f) { 
+                GamePad.SetVibration(playerIndex, 0, 0);
+        }
+        if (timeBWNote > 0.75f && timeBWNote <= 1f)
+        {
+            GamePad.SetVibration(playerIndex, 0, 1);
+        }
+        else if (timeBWNote > 0.5f && timeBWNote <= 0.75f)
+        {
+            GamePad.SetVibration(playerIndex, 0, 0);
+        }
+        else if (timeBWNote > 0.25f && timeBWNote <= 0.5f)
+        {
+            GamePad.SetVibration(playerIndex, 0, 1);
+        }
+        else if (timeBWNote > 0 && timeBWNote <= 0.25f)
+        {
+            GamePad.SetVibration(playerIndex, 0, 0);
+        }
+        else
+        {
+            playingIntro = false;
+            timeBWNote = 0.5f;
+
+        }
+        
+
+    }
 
     void playMusic()
     {
-
+        if (playingIntro)
+        {
+            intro();
+        }
+        else {
+            if (timeBWNote > 0.25f)
+            {
+                if (tic == 0)
+                {
+                    GamePad.SetVibration(playerIndex, 0, 1);
+                    tic = 1;
+                }
+                else if (tic == 1) {
+                    GamePad.SetVibration(playerIndex, 0.5f, 0);
+                    tic = 0;
+                }
+            }
+            else if (timeBWNote > 0 && timeBWNote <= 0.25f)
+                GamePad.SetVibration(playerIndex, 0, 0);
+            else
+            {
+                timeBWNote = 0.5f;
+            }
+        }
 
         //if (timeBWNote > 0.15f) {
         //    if (notePosition[currNote]==1)
