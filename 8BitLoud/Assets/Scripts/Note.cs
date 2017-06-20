@@ -25,7 +25,7 @@ public class Note : MonoBehaviour {
             Instantiate(failBurst, transform.position, failBurst.rotation);
         }
 
-        if (other.gameObject.name == "sucess")
+        if (other.gameObject.name == "sucess" && StringControl.lockInput)
         {
             Destroy(gameObject);
             Debug.Log("HEIL!!!!");

@@ -4,51 +4,59 @@ using System.Collections;
 public class StringControl : MonoBehaviour {
 
     public KeyCode activateString;
-    public bool lockInput = false;
+    public static bool lockInput = false;
     public static bool releasedKey = false;
-	// Use this for initialization
-	void Start () {
-	
-	}
+    public Transform stand;
+    public Transform jump;
+    // Use this for initialization
+    void Start () {
+        jump.GetComponent<SpriteRenderer>().enabled = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
 	    if (!lockInput && Input.GetKeyDown(activateString))
         {
             lockInput = true;
-            GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 4);
+            jump.GetComponent<SpriteRenderer>().enabled = true;
+            stand.GetComponent<SpriteRenderer>().enabled = false;
+            jump.GetComponent<Rigidbody2D>().velocity= new Vector3(0, 3);
             StartCoroutine(retractCollider());
-            releasedKey = false;
+           //releasedKey = false;
         }
-        if (Input.GetKeyUp(activateString))
-        {
-            releasedKey = true;
-        }
+        //if (Input.GetKeyUp(activateString))
+        //{
+        //    releasedKey = true;
+        //}
 	}
 
     IEnumerator retractCollider()
     {
-        yield return new WaitForSeconds(.2f);
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        yield return new WaitForSeconds(.1f);
+        jump.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 0);
+        StartCoroutine(releaseNote());
 
-        if (releasedKey == false)
-        {
-            yield return new WaitForSeconds(1);
-            StartCoroutine(releaseNote());
-        }
-        if (releasedKey == true)
-        {
-            StartCoroutine(releaseNote());
-        }
+        //if (releasedKey == false)
+        //{
+        //    yield return new WaitForSeconds(1);
+        //    StartCoroutine(releaseNote());
+        //}
+        //if (releasedKey == true)
+        //{
+        //    StartCoroutine(releaseNote());
+        //}
         
         
     }
 
     IEnumerator releaseNote()
     {
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -4);
-        yield return new WaitForSeconds(.2f);
-        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        jump.GetComponent<Rigidbody2D>().velocity = new Vector3(0, -3);
+        yield return new WaitForSeconds(.1f);
+        jump.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 0);
+        jump.position= new Vector3(-1f, -0.522f,-2.55f);
+        jump.GetComponent<SpriteRenderer>().enabled = false;
+        stand.GetComponent<SpriteRenderer>().enabled = true;
         lockInput = false;
     }
 }

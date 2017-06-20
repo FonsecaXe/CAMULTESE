@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GM : MonoBehaviour {
 
-    static float tempo = 0.25f;
+    static float tempo = 0.3f;
 
     static float sb=tempo*4;
     static float m = tempo * 2;
