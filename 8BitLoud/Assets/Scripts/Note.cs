@@ -21,14 +21,17 @@ public class Note : MonoBehaviour {
         if (other.gameObject.name == "failcollider")
         {
             Destroy(gameObject);
-            Debug.Log("FAIL!!!!");
-            Instantiate(failBurst, transform.position, failBurst.rotation);
+            //Instantiate(failBurst, transform.position, failBurst.rotation);
         }
 
-        if (other.gameObject.name == "sucess" && StringControl.lockInput)
+        if (other.gameObject.name == "sucessOne" && StringControlOne.lockInput)
         {
             Destroy(gameObject);
-            Debug.Log("HEIL!!!!");
+            Instantiate(sucessBurst, transform.position, sucessBurst.rotation);
+        }
+        if (other.gameObject.name == "sucessTwo" && StringControlTwo.lockInput)
+        {
+            Destroy(gameObject);
             Instantiate(sucessBurst, transform.position, sucessBurst.rotation);
         }
     }

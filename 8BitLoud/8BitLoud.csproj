@@ -58,21 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TestRunner">
-      <HintPath>Library\UnityAssemblies\UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\UnityAssemblies\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Analytics">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.HoloLens">
-      <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.VR">
-      <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -84,9 +69,9 @@
     <Compile Include="Assets\Scripts\FailControl.cs" />
     <Compile Include="Assets\Scripts\GM.cs" />
     <Compile Include="Assets\Scripts\Note.cs" />
-    <Compile Include="Assets\Scripts\StringControl.cs" />
+    <Compile Include="Assets\Scripts\StringControlOne.cs" />
+    <Compile Include="Assets\Scripts\StringControlTwo.cs" />
     <Compile Include="Assets\Scripts\Vibration.cs" />
-    <Compile Include="Assets\Scripts\note2xControl.cs" />
     <Compile Include="Assets\XInputDotNet\Examples\XInputTestCS.cs" />
   </ItemGroup>
   <ItemGroup>

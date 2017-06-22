@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using XInputDotNetPure;
-using System.Collections.Generic;
+using System.Collections;
 
 public class Vibration : MonoBehaviour {
-    //static float tempo = 1f;
+    //static float tempo = 1.f;
 
     //static float sb = tempo * 4;
     //static float m = tempo * 2;
@@ -14,24 +14,41 @@ public class Vibration : MonoBehaviour {
     //static float sf = tempo * 0.0625f;
 
     //List<float> noteTime = new List<float>() { c, c, c, c, c, c, sm, sm };
-    //List<float> notePosition = new List<float>() { 2, 2, 3, 2, 3, 1, 2, 2 };
+    //List<float> notePosition = new List<float>() { 2, 2, 3, 2, 3, 1, 2, 2 };.
 
-    static float den = 1.2f;
+    public Transform vibOn;
+    public Transform vibOff;
+    public Transform musOn;
+    public Transform musOff;
+    float timeMusic;
+    float timeVibration;
+    bool vibrateLock = false;
+    bool soundLock = true;
+    bool vibrate = true;
+    int vibLev = 1;
 
-    float timeBWNote = 2f*den;
+    static float den = 1.18f;
 
-    int tic = 0;
+    float timeBWNote = 3.6f*den;
+
+    bool tic = false;
     bool playingIntro=true;
 
+
+
+    bool noSound = false;
     bool playerIndexSet = false;
-    PlayerIndex playerIndex;
+    public static PlayerIndex playerIndex;
     GamePadState state;
     GamePadState prevState;
-    MusicNote[] notes= { new MusicNote(1, 0, 1), new MusicNote(0.5f, 1, 0), new MusicNote(1, 0, 0) };
     int currNote = 0;
 
     // Use this for initialization
     void Start () {
+        vibOn.GetComponent<SpriteRenderer>().enabled = false;
+        vibOff.GetComponent<SpriteRenderer>().enabled = false;
+        musOn.GetComponent<SpriteRenderer>().enabled = false;
+        musOff.GetComponent<SpriteRenderer>().enabled = false;
     }
 	
 	// Update is called once per frame
@@ -52,49 +69,86 @@ public class Vibration : MonoBehaviour {
                 }
             }
         }
+        prevState = state;
+        state = GamePad.GetState(playerIndex);
+
+        // Detect if a button was pressed this frame
+        if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && !vibrateLock)
+        {
+            vibrate = !vibrate;
+            vibrateLock = true;
+            timeVibration = 1;
+        }
+        // Detect if a button was released this frame
+        if (prevState.Buttons.B == ButtonState.Released && state.Buttons.B == ButtonState.Pressed && !soundLock)
+        {
+            noSound = !noSound;
+            GetComponent<AudioSource>().mute=noSound;
+            soundLock = true;
+            timeMusic = 1;
+            
+        }
+
+        if (vibrate)
+            vibLev = 1;
+        else
+            vibLev = 0;
 
         playMusic();
         timeBWNote -= Time.deltaTime;
+
+        timeMusic -= Time.deltaTime;
+        timeVibration -= Time.deltaTime;
+
+        ShowMusic();
+        ShowVibration();
     }
 
     void intro()
     {
-        if (timeBWNote > 1.75f*den)
+        if (timeBWNote > 2f * den)
         {
-            GamePad.SetVibration(playerIndex, 0, 1);
+            GamePad.SetVibration(playerIndex, 0, 0);
+        }
+        else if (timeBWNote > 1.75f*den && timeBWNote <= 2f * den)
+        {
+            GamePad.SetVibration(playerIndex, 0, vibLev);
         }
         else if(timeBWNote>1.5f * den && timeBWNote <= 1.75f*den) { 
                 GamePad.SetVibration(playerIndex, 0, 0);
         }
         else if(timeBWNote>1.25f * den && timeBWNote <= 1.5f * den) { 
-                GamePad.SetVibration(playerIndex, 0, 1);
+                GamePad.SetVibration(playerIndex, 0, vibLev);
         }
         else if(timeBWNote>1f * den && timeBWNote <= 1.25f * den) { 
                 GamePad.SetVibration(playerIndex, 0, 0);
         }
         if (timeBWNote > 0.75f * den && timeBWNote <= 1f * den)
         {
-            GamePad.SetVibration(playerIndex, 0, 1);
+            
+            GamePad.SetVibration(playerIndex, 0, vibLev);
         }
         else if (timeBWNote > 0.5f * den && timeBWNote <= 0.75f * den)
         {
+            GetComponent<AudioSource>().Play();
             GamePad.SetVibration(playerIndex, 0, 0);
         }
         else if (timeBWNote > 0.25f * den && timeBWNote <= 0.5f * den)
         {
-            GamePad.SetVibration(playerIndex, 0, 1);
+
+            
+            GamePad.SetVibration(playerIndex, vibLev, vibLev);
         }
-        else if (timeBWNote > 0 && timeBWNote <= 0.25f * den)
+        else if (timeBWNote > -1.5*den && timeBWNote <= 0.25f * den)
         {
             GamePad.SetVibration(playerIndex, 0, 0);
         }
-        else
+        else if (timeBWNote <= -1.5*den)
         {
             playingIntro = false;
             timeBWNote = 0.5f * den;
 
         }
-        
 
     }
 
@@ -107,20 +161,19 @@ public class Vibration : MonoBehaviour {
         else {
             if (timeBWNote > 0.25f * den)
             {
-                if (tic == 0)
+                if (!tic)
                 {
-                    GamePad.SetVibration(playerIndex, 0, 1);
-                    tic = 1;
+                    GamePad.SetVibration(playerIndex, 0, vibLev);
                 }
-                else if (tic == 1) {
-                    GamePad.SetVibration(playerIndex, 0.5f * den, 0);
-                    tic = 0;
+                else if (tic) {
+                    GamePad.SetVibration(playerIndex, vibLev*0.2f, 0);
                 }
             }
             else if (timeBWNote > 0 && timeBWNote <= 0.25f * den)
                 GamePad.SetVibration(playerIndex, 0, 0);
             else
             {
+                tic = !tic;
                 timeBWNote = 0.5f * den;
             }
         }
@@ -141,17 +194,51 @@ public class Vibration : MonoBehaviour {
         //    timeBWNote = noteTime[currNote];
         //}
     }
-}
 
-public class MusicNote
-{
-    public float tempo;
-    public float rightV;
-    public float leftV;
-    public MusicNote(float tempo,float rightV, float leftV)
+    void ShowVibration()
     {
-        this.tempo = tempo;
-        this.rightV = rightV;
-        this.leftV = leftV;
+        if (vibrate && vibrateLock && timeVibration>0)
+        {
+            vibOn.GetComponent<SpriteRenderer>().enabled = true;
+            return;
+
+        }
+        else if (!vibrate && vibrateLock && timeVibration > 0)
+        {
+            vibOff.GetComponent<SpriteRenderer>().enabled = true;
+            return;
+
+        }
+        else
+        {
+            vibOff.GetComponent<SpriteRenderer>().enabled = false;
+            vibOn.GetComponent<SpriteRenderer>().enabled = false;
+            vibrateLock = false;
+        }
+    }
+
+    void ShowMusic()
+    {
+        if (!noSound && soundLock && timeMusic> 0)
+        {
+            musOn.GetComponent<SpriteRenderer>().enabled = true;
+            return;
+
+        }
+        else if (noSound && soundLock && timeMusic > 0)
+        {
+            musOff.GetComponent<SpriteRenderer>().enabled = true;
+            return;
+        }
+        else
+        {
+            musOff.GetComponent<SpriteRenderer>().enabled = false;
+            musOn.GetComponent<SpriteRenderer>().enabled = false;
+            soundLock = false;
+        }
+
     }
 }
+
+
+
