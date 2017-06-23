@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public class GM : MonoBehaviour {
 
 
-    bool ended = false;
+    public static bool ended = false;
 
     float timer;
 
@@ -132,9 +133,11 @@ public class GM : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        timer -= Time.deltaTime;
-        spawnNote();
-
+        if (Vibration.started)
+        {
+            timer -= Time.deltaTime;
+            spawnNote();
+        }
     }
 
     void spawnNote()
@@ -171,12 +174,17 @@ public class GM : MonoBehaviour {
         {
             AudioSource music = GameObject.Find("guitar").GetComponent<AudioSource>();
             music.mute = true;
+            AudioSource endMusic = GameObject.Find("endMusic").GetComponent<AudioSource>();
+            endMusic.Play();
+            GameObject.Find("startText").GetComponent<Text>().text = "THE END";
             ended = true;
-            timer = 5f;
+            timer = 6f;
         }
         if (timer <= 0 && ended)
         {
-            Debug.Log("FIM!!!!");
+            Vibration.started = false;
+            ended = false;
+            Points.points = 0;
             SceneManager.LoadScene("Intro");
         }
 
