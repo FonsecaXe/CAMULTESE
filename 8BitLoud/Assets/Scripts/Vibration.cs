@@ -1,20 +1,8 @@
 ﻿using UnityEngine;
 using XInputDotNetPure;
-using System.Collections;
+using UnityEngine.UI;
 
 public class Vibration : MonoBehaviour {
-    //static float tempo = 1.f;
-
-    //static float sb = tempo * 4;
-    //static float m = tempo * 2;
-    //static float sm = tempo;
-    //static float c = tempo * 0.5f;
-    //static float sc = tempo * 0.25f;
-    //static float f = tempo * 0.125f;
-    //static float sf = tempo * 0.0625f;
-
-    //List<float> noteTime = new List<float>() { c, c, c, c, c, c, sm, sm };
-    //List<float> notePosition = new List<float>() { 2, 2, 3, 2, 3, 1, 2, 2 };.
 
     public Transform vibOn;
     public Transform vibOff;
@@ -33,6 +21,7 @@ public class Vibration : MonoBehaviour {
 
     bool tic = false;
     bool playingIntro=true;
+    public static bool started = false;
 
 
 
@@ -72,6 +61,12 @@ public class Vibration : MonoBehaviour {
         prevState = state;
         state = GamePad.GetState(playerIndex);
 
+        if (state.Buttons.Start == ButtonState.Pressed && !started)
+        {
+            started = true;
+            GameObject.Find("endText").GetComponent<Text>().text= "";
+        }
+
         // Detect if a button was pressed this frame
         if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && !vibrateLock)
         {
@@ -89,19 +84,23 @@ public class Vibration : MonoBehaviour {
             
         }
 
-        if (vibrate)
-            vibLev = 1;
-        else
-            vibLev = 0;
+        if (started && !GM.ended)
+        {
+            if (vibrate)
+                vibLev = 1;
+            else
+                vibLev = 0;
 
-        playMusic();
-        timeBWNote -= Time.deltaTime;
+            playMusic();
+            timeBWNote -= Time.deltaTime;
 
-        timeMusic -= Time.deltaTime;
-        timeVibration -= Time.deltaTime;
+            timeMusic -= Time.deltaTime;
+            timeVibration -= Time.deltaTime;
 
-        ShowMusic();
-        ShowVibration();
+            ShowMusic();
+            ShowVibration();
+        }
+
     }
 
     void intro()
@@ -178,21 +177,6 @@ public class Vibration : MonoBehaviour {
             }
         }
 
-        //if (timeBWNote > 0.15f) {
-        //    if (notePosition[currNote]==1)
-        //        GamePad.SetVibration(playerIndex, 1, 0);
-        //    else if (notePosition[currNote] == 2)
-        //        GamePad.SetVibration(playerIndex, 0, 1);
-        //    else 
-        //        GamePad.SetVibration(playerIndex, 0, 0);
-        //}
-        //else if (timeBWNote > 0 && timeBWNote <= 0.25f)
-        //    GamePad.SetVibration(playerIndex, 0, 0);
-        //else
-        //{
-        //    currNote++;
-        //    timeBWNote = noteTime[currNote];
-        //}
     }
 
     void ShowVibration()
