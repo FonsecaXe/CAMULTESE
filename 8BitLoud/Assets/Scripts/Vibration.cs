@@ -1,10 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using XInputDotNetPure;
 using System.Collections;
 
 public class Vibration : MonoBehaviour {
+    //static float tempo = 1.f;
 
+    //static float sb = tempo * 4;
+    //static float m = tempo * 2;
+    //static float sm = tempo;
+    //static float c = tempo * 0.5f;
+    //static float sc = tempo * 0.25f;
+    //static float f = tempo * 0.125f;
+    //static float sf = tempo * 0.0625f;
+
+    //List<float> noteTime = new List<float>() { c, c, c, c, c, c, sm, sm };
+    //List<float> notePosition = new List<float>() { 2, 2, 3, 2, 3, 1, 2, 2 };.
 
     public Transform vibOn;
     public Transform vibOff;
@@ -15,14 +25,14 @@ public class Vibration : MonoBehaviour {
     bool vibrateLock = false;
     bool soundLock = true;
     bool vibrate = true;
-    public static int vibLev = 1;
+    int vibLev = 1;
 
     static float den = 1.175f;
 
     float timeBWNote = 3.6f*den;
+
     bool tic = false;
     bool playingIntro=true;
-    public static bool started = false;
 
 
 
@@ -40,14 +50,11 @@ public class Vibration : MonoBehaviour {
         musOn.GetComponent<SpriteRenderer>().enabled = false;
         musOff.GetComponent<SpriteRenderer>().enabled = false;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
+	
+	// Update is called once per frame
+	void Update () {
         // Find a PlayerIndex, for a single player game
         // Will find the first controller that is connected ans use it
-
-
         if (!playerIndexSet || !prevState.IsConnected)
         {
             for (int i = 0; i < 4; ++i)
@@ -65,13 +72,6 @@ public class Vibration : MonoBehaviour {
         prevState = state;
         state = GamePad.GetState(playerIndex);
 
-        if (state.Buttons.Start == ButtonState.Pressed && !started)
-        {
-            started = true;
-            Text startText = GameObject.Find("startText").GetComponent<Text>();
-            startText.text = "";
-        }
-
         // Detect if a button was pressed this frame
         if (prevState.Buttons.A == ButtonState.Released && state.Buttons.A == ButtonState.Pressed && !vibrateLock)
         {
@@ -83,27 +83,25 @@ public class Vibration : MonoBehaviour {
         if (prevState.Buttons.B == ButtonState.Released && state.Buttons.B == ButtonState.Pressed && !soundLock)
         {
             noSound = !noSound;
-            GetComponent<AudioSource>().mute = noSound;
+            GetComponent<AudioSource>().mute=noSound;
             soundLock = true;
             timeMusic = 1;
-
+            
         }
 
-        if (started && !GM.ended) { 
-            if (vibrate)
-                vibLev = 1;
-            else
-                vibLev = 0;
+        if (vibrate)
+            vibLev = 1;
+        else
+            vibLev = 0;
 
-            playMusic();
-            timeBWNote -= Time.deltaTime;
+        playMusic();
+        timeBWNote -= Time.deltaTime;
 
-            timeMusic -= Time.deltaTime;
-            timeVibration -= Time.deltaTime;
+        timeMusic -= Time.deltaTime;
+        timeVibration -= Time.deltaTime;
 
-            ShowMusic();
-            ShowVibration();
-        }
+        ShowMusic();
+        ShowVibration();
     }
 
     void intro()
@@ -180,7 +178,21 @@ public class Vibration : MonoBehaviour {
             }
         }
 
-
+        //if (timeBWNote > 0.15f) {
+        //    if (notePosition[currNote]==1)
+        //        GamePad.SetVibration(playerIndex, 1, 0);
+        //    else if (notePosition[currNote] == 2)
+        //        GamePad.SetVibration(playerIndex, 0, 1);
+        //    else 
+        //        GamePad.SetVibration(playerIndex, 0, 0);
+        //}
+        //else if (timeBWNote > 0 && timeBWNote <= 0.25f)
+        //    GamePad.SetVibration(playerIndex, 0, 0);
+        //else
+        //{
+        //    currNote++;
+        //    timeBWNote = noteTime[currNote];
+        //}
     }
 
     void ShowVibration()
