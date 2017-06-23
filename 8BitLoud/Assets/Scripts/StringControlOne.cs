@@ -27,12 +27,8 @@ public class StringControlOne : MonoBehaviour {
             stand.GetComponent<SpriteRenderer>().enabled = false;
             jump.GetComponent<Rigidbody2D>().velocity= new Vector3(0, 3);
             StartCoroutine(retractCollider());
-           //releasedKey = false;
         }
-        //if (Input.GetKeyUp(activateString))
-        //{
-        //    releasedKey = true;
-        //}
+
 	}
 
     IEnumerator retractCollider()
@@ -41,15 +37,7 @@ public class StringControlOne : MonoBehaviour {
         jump.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 0);
         StartCoroutine(releaseNote());
 
-        //if (releasedKey == false)
-        //{
-        //    yield return new WaitForSeconds(1);
-        //    StartCoroutine(releaseNote());
-        //}
-        //if (releasedKey == true)
-        //{
-        //    StartCoroutine(releaseNote());
-        //}
+
         
         
     }

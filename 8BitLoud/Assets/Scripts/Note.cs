@@ -21,17 +21,20 @@ public class Note : MonoBehaviour {
         if (other.gameObject.name == "failcollider")
         {
             Destroy(gameObject);
+            Points.points -= 1;
             //Instantiate(failBurst, transform.position, failBurst.rotation);
         }
 
         if (other.gameObject.name == "sucessOne" && StringControlOne.lockInput)
         {
             Destroy(gameObject);
+            Points.points += 2;
             Instantiate(sucessBurst, transform.position, sucessBurst.rotation);
         }
         if (other.gameObject.name == "sucessTwo" && StringControlTwo.lockInput)
         {
             Destroy(gameObject);
+            Points.points += 2;
             Instantiate(sucessBurst, transform.position, sucessBurst.rotation);
         }
     }

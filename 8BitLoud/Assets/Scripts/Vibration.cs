@@ -27,7 +27,7 @@ public class Vibration : MonoBehaviour {
     bool vibrate = true;
     int vibLev = 1;
 
-    static float den = 1.18f;
+    static float den = 1.175f;
 
     float timeBWNote = 3.6f*den;
 
@@ -36,7 +36,7 @@ public class Vibration : MonoBehaviour {
 
 
 
-    bool noSound = false;
+    public static bool noSound = false;
     bool playerIndexSet = false;
     public static PlayerIndex playerIndex;
     GamePadState state;
@@ -139,11 +139,11 @@ public class Vibration : MonoBehaviour {
             
             GamePad.SetVibration(playerIndex, vibLev, vibLev);
         }
-        else if (timeBWNote > -1.5*den && timeBWNote <= 0.25f * den)
+        else if (timeBWNote > -0.5*den && timeBWNote <= 0.25f * den)
         {
             GamePad.SetVibration(playerIndex, 0, 0);
         }
-        else if (timeBWNote <= -1.5*den)
+        else if (timeBWNote <= -0.5*den)
         {
             playingIntro = false;
             timeBWNote = 0.5f * den;

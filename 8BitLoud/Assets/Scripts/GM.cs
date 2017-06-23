@@ -1,22 +1,123 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 
 public class GM : MonoBehaviour {
 
-    static float tempo = 0.3f;
 
-    static float sb=tempo*4;
-    static float m = tempo * 2;
-    static float sm = tempo;
-    static float c = tempo * 0.5f;
-    static float sc = tempo * 0.25f;
-    static float f = tempo * 0.125f;
-    static float sf = tempo * 0.0625f;
+    bool ended = false;
 
-    List<float> noteTime = new List<float>() { c, c, c, c, c, c, sm,sm};
-    List<float> notePosition = new List<float>() { 2, 2, 3, 1, 3, 2, 1, 2};
+    float timer;
+
+    static float tempo = 1.18f;
+
+    static float sb=tempo;
+    static float m = tempo / 2;
+    static float sm = tempo / 4;
+    static float c = tempo  / 8;
+    static float sc = tempo / 16;
+    static float f = tempo / 32;
+    static float sf = tempo / 64;
+
+    List<float> noteTime = new List<float>(){sb,
+        sm,sm,sm,sm,
+        sm,c,c,sm,sm,
+        c,sm,c,c,c,sm,
+        m,sm,c,c,
+        c,sm,c,c,sm,c,
+        sm,c,c,sm,sm,
+        c,sm,c,c,c,sm,
+        m,sm,c,c,
+        c,sm,c,c,sm,c,
+        sm,c,c,c,sm,c,
+        c,c,c,c,c,c,c,c,
+        sm,c,c,c,sm,c,
+        c,sm,c,m,
+        sm,c,c,c,sm,c,
+        c,c,c,c,c,c,c,c,
+        sm,sm,c,sm,c,
+        m,m,
+        sm,c,c,c,sm,c,
+        c,c,c,c,c,c,c,c,
+        sm,c,c,c,sm,c,
+        c,sm,c,m,
+        sm,c,c,c,sm,c,
+        c,c,c,c,c,c,c,c,
+        sm,sm,c,sm,c,
+        m,m,
+
+        c,sm,c,c,c,sm,
+        c,sm,c,m,
+        c,sm,c,c,c,c,c,
+        sb,
+        c,sm,c,c,c,sm,
+        c,sm,c,m,
+        c,c,c,c,c,c,sm,
+
+        sm,sm,sm,sm,
+        sm,c,c,sm,sm,
+        c,sm,c,c,c,sm,
+        m,sm,c,c,
+        c,sm,c,c,sm,c,
+        sm,c,c,sm,sm,
+        c,sm,c,c,c,sm,
+        m,sm,c,c,
+        c,sm,c,c,sm,c,
+
+    };
+
+        //sb,sb,sb,sb };
+    List<float> notePosition = new List<float>() {1,
+        2,3,2,3,
+        1,3,1,3,1,
+        3,3,3,3,3,3,
+        2,3,3,3,
+        1,3,3,3,3,3,
+        2,3,2,3,2,
+        3,3,3,3,3,3,
+        2,3,3,3,
+        1,3,3,3,3,3,
+        2,3,3,1,3,3,
+        1,3,3,3,2,3,3,3,
+        2,3,3,1,3,3,
+        3,2,2,2,
+        2,3,3,1,3,3,
+        1,3,3,3,2,3,3,3,
+        3,1,3,1,3,
+        1,3,
+        2,3,3,1,3,3,
+        1,3,3,3,2,3,3,3,
+        2,3,3,1,3,3,
+        3,2,2,2,
+        2,3,3,1,3,3,
+        1,3,3,3,2,3,3,3,
+        3,1,3,1,3,
+        1,3,
+
+        2,3,3,2,3,3,
+        2,3,3,3,
+        1,3,3,1,3,3,3,
+        1,
+        2,3,3,2,3,3,
+        2,3,3,3,
+        1,3,3,3,1,3,3,
+
+        1,3,2,3,
+        1,3,1,3,1,
+        3,3,3,3,3,3,
+        2,3,3,3,
+        1,3,3,3,3,3,
+        1,3,1,3,1,
+        3,3,3,3,3,3,
+        2,3,3,3,
+        1,3,3,3,3,3,
+
+
+    };
+        
+    //1,2,1,2 };
 
     public int noteMark = 0;
     public Transform noteObj;
@@ -31,38 +132,54 @@ public class GM : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (timerReset)
-        {
-            StartCoroutine(spawnNote());
-            timerReset = false;
-        }
+        timer -= Time.deltaTime;
+        spawnNote();
+
     }
 
-    IEnumerator spawnNote()
+    void spawnNote()
     {
-        bool spawn;
-        float xPos;
-        yield return new WaitForSeconds(noteTime[noteMark]);
-        if (notePosition[noteMark] == 1)
+        if (timer <= 0 && noteMark<noteTime.Count)
         {
-            xPos = -1f;
-            spawn = true;
+            bool spawn;
+            float xPos;
+
+            if (notePosition[noteMark] == 1)
+            {
+                xPos = -1f;
+                spawn = true;
+            }
+            else if (notePosition[noteMark] == 2)
+            {
+                xPos = 1f;
+                spawn = true;
+            }
+            else
+            {
+                spawn = false;
+                xPos = 0;
+            }
+
+            if (spawn)
+                Instantiate(noteObj, new Vector3(xPos, 1.27f, 2.8f), noteObj.rotation);
+            timer = noteTime[noteMark];
+
+
+            noteMark++;
         }
-        else if (notePosition[noteMark] == 2)
+        else if (timer <= -3.6 && noteMark >= noteTime.Count && !ended)
         {
-            xPos = 1f;
-            spawn = true;
+            AudioSource music = GameObject.Find("guitar").GetComponent<AudioSource>();
+            music.mute = true;
+            ended = true;
+            timer = 5f;
         }
-        else
+        if (timer <= 0 && ended)
         {
-            spawn = false;
-            xPos = 0;
+            Debug.Log("FIM!!!!");
+            SceneManager.LoadScene("Intro");
         }
-        
-        if(spawn)
-            Instantiate(noteObj, new Vector3(xPos, 1.27f, 2.8f), noteObj.rotation);
-        noteMark++;
-        timerReset = true;
+
     }
 
 
